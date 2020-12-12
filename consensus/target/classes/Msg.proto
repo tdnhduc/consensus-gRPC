@@ -1,0 +1,23 @@
+syntax = "proto3";
+option java_multiple_files = true;
+package com.hcmus.distributed.system.grpc;
+
+message VotingRequest {
+  string pid = 1;
+  string msg = 2;
+  bool isTruthful = 3;
+  string nodeNeedConfirm = 4;
+  int64 timeSend = 5;
+}
+
+message VotingResponse {
+  string pid = 1;
+  string msg = 2;
+  bool isTruthful = 3;
+  string nodeNeedConfirm = 4;
+  int64 timeReceive = 5;
+}
+
+service VotingService {
+  rpc vote(VotingRequest) returns (VotingResponse);
+}
