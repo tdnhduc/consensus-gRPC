@@ -1,6 +1,7 @@
 package com.hcmus.distributed.system.consensus.config;
 
 import com.hcmus.distributed.system.consensus.exception.InvalidConfig;
+import com.hcmus.distributed.system.consensus.server.writer.StableWriter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +10,9 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.Executor;
 
 @Configuration
@@ -34,6 +38,15 @@ public class Config {
 
     @Value("${pid.servers}")
     private String pidServers;
+
+    @Value("${fixRated}")
+    private String fixRated;
+
+    @Value("${number.confirm}")
+    private String numberNeedConfirm;
+
+    @Value("${stable.direction}")
+    private String stableDirection;
 
     public String getPid() {
         return pid;
@@ -91,9 +104,36 @@ public class Config {
         this.pidServers = pidServers;
     }
 
+    public String getFixRated() {
+        return fixRated;
+    }
+
+    public void setFixRated(String fixRated) {
+        this.fixRated = fixRated;
+    }
+
+    public String getNumberNeedConfirm() {
+        return numberNeedConfirm;
+    }
+
+    public void setNumberNeedConfirm(String numberNeedConfirm) {
+        this.numberNeedConfirm = numberNeedConfirm;
+    }
+
     @Bean
     public ProcessInfo processInfo() throws InvalidConfig {
-        return new ProcessInfo(pid, Integer.valueOf(port), byzantine, initialDelay, timeDelayAllServer, pidServers, portServers);
+        return new ProcessInfo(pid, Integer.valueOf(port), byzantine, initialDelay, fixRated, numberNeedConfirm, timeDelayAllServer, pidServers, portServers);
+    }
+
+    @Bean
+    FileWriter file() throws IOException {
+        FileWriter myFile = new FileWriter(stableDirection);
+        return myFile;
+    }
+
+    @Bean
+    public StableWriter stableWriter(FileWriter fileWriter) {
+        return new StableWriter(fileWriter);
     }
 
     @Bean

@@ -2,22 +2,34 @@ syntax = "proto3";
 option java_multiple_files = true;
 package com.hcmus.distributed.system.grpc;
 
-message VotingRequest {
-  string pid = 1;
-  string msg = 2;
-  bool isTruthful = 3;
-  string nodeNeedConfirm = 4;
-  int64 timeSend = 5;
+message BroadcastRequest {
+  /**
+    Need to add all every broad cast request
+   */
+  BaseRequest baseRequest = 1;
+  string pidNeedConfirm = 2;
+  bool isLegal = 3;
 }
 
-message VotingResponse {
-  string pid = 1;
-  string msg = 2;
-  bool isTruthful = 3;
-  string nodeNeedConfirm = 4;
-  int64 timeReceive = 5;
+message BroadcastResponse {
+  /**
+    Need to add all every broadcast response
+   */
+  BaseResponse baseResponse = 1;
 }
 
-service VotingService {
-  rpc vote(VotingRequest) returns (VotingResponse);
+message BaseRequest {
+  string pid = 1;
+  int64 timeSend = 2;
+}
+
+message BaseResponse {
+  string pid = 1;
+  bool ack = 2;
+  int64 timeReceive = 3;
+}
+
+service ConsensusService {
+  rpc broadcast(BroadcastRequest) returns (BroadcastResponse);
+  rpc schedule(BaseRequest) returns (BaseResponse);
 }

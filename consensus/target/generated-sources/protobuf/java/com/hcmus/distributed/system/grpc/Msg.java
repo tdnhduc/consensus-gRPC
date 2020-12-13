@@ -15,15 +15,25 @@ public final class Msg {
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_hcmus_distributed_system_grpc_VotingRequest_descriptor;
+    internal_static_com_hcmus_distributed_system_grpc_BroadcastRequest_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_hcmus_distributed_system_grpc_VotingRequest_fieldAccessorTable;
+      internal_static_com_hcmus_distributed_system_grpc_BroadcastRequest_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_hcmus_distributed_system_grpc_VotingResponse_descriptor;
+    internal_static_com_hcmus_distributed_system_grpc_BroadcastResponse_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_hcmus_distributed_system_grpc_VotingResponse_fieldAccessorTable;
+      internal_static_com_hcmus_distributed_system_grpc_BroadcastResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_hcmus_distributed_system_grpc_BaseRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_hcmus_distributed_system_grpc_BaseRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_hcmus_distributed_system_grpc_BaseResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_hcmus_distributed_system_grpc_BaseResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -34,15 +44,21 @@ public final class Msg {
   static {
     java.lang.String[] descriptorData = {
       "\n\tMsg.proto\022!com.hcmus.distributed.syste" +
-      "m.grpc\"h\n\rVotingRequest\022\013\n\003pid\030\001 \001(\t\022\013\n\003" +
-      "msg\030\002 \001(\t\022\022\n\nisTruthful\030\003 \001(\010\022\027\n\017nodeNee" +
-      "dConfirm\030\004 \001(\t\022\020\n\010timeSend\030\005 \001(\003\"l\n\016Voti" +
-      "ngResponse\022\013\n\003pid\030\001 \001(\t\022\013\n\003msg\030\002 \001(\t\022\022\n\n" +
-      "isTruthful\030\003 \001(\010\022\027\n\017nodeNeedConfirm\030\004 \001(" +
-      "\t\022\023\n\013timeReceive\030\005 \001(\0032|\n\rVotingService\022" +
-      "k\n\004vote\0220.com.hcmus.distributed.system.g" +
-      "rpc.VotingRequest\0321.com.hcmus.distribute" +
-      "d.system.grpc.VotingResponseB\002P\001b\006proto3"
+      "m.grpc\"\200\001\n\020BroadcastRequest\022C\n\013baseReque" +
+      "st\030\001 \001(\0132..com.hcmus.distributed.system." +
+      "grpc.BaseRequest\022\026\n\016pidNeedConfirm\030\002 \001(\t" +
+      "\022\017\n\007isLegal\030\003 \001(\010\"Z\n\021BroadcastResponse\022E" +
+      "\n\014baseResponse\030\001 \001(\0132/.com.hcmus.distrib" +
+      "uted.system.grpc.BaseResponse\",\n\013BaseReq" +
+      "uest\022\013\n\003pid\030\001 \001(\t\022\020\n\010timeSend\030\002 \001(\003\"=\n\014B" +
+      "aseResponse\022\013\n\003pid\030\001 \001(\t\022\013\n\003ack\030\002 \001(\010\022\023\n" +
+      "\013timeReceive\030\003 \001(\0032\367\001\n\020ConsensusService\022",
+      "v\n\tbroadcast\0223.com.hcmus.distributed.sys" +
+      "tem.grpc.BroadcastRequest\0324.com.hcmus.di" +
+      "stributed.system.grpc.BroadcastResponse\022" +
+      "k\n\010schedule\022..com.hcmus.distributed.syst" +
+      "em.grpc.BaseRequest\032/.com.hcmus.distribu" +
+      "ted.system.grpc.BaseResponseB\002P\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -56,18 +72,30 @@ public final class Msg {
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         }, assigner);
-    internal_static_com_hcmus_distributed_system_grpc_VotingRequest_descriptor =
+    internal_static_com_hcmus_distributed_system_grpc_BroadcastRequest_descriptor =
       getDescriptor().getMessageTypes().get(0);
-    internal_static_com_hcmus_distributed_system_grpc_VotingRequest_fieldAccessorTable = new
+    internal_static_com_hcmus_distributed_system_grpc_BroadcastRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_hcmus_distributed_system_grpc_VotingRequest_descriptor,
-        new java.lang.String[] { "Pid", "Msg", "IsTruthful", "NodeNeedConfirm", "TimeSend", });
-    internal_static_com_hcmus_distributed_system_grpc_VotingResponse_descriptor =
+        internal_static_com_hcmus_distributed_system_grpc_BroadcastRequest_descriptor,
+        new java.lang.String[] { "BaseRequest", "PidNeedConfirm", "IsLegal", });
+    internal_static_com_hcmus_distributed_system_grpc_BroadcastResponse_descriptor =
       getDescriptor().getMessageTypes().get(1);
-    internal_static_com_hcmus_distributed_system_grpc_VotingResponse_fieldAccessorTable = new
+    internal_static_com_hcmus_distributed_system_grpc_BroadcastResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_hcmus_distributed_system_grpc_VotingResponse_descriptor,
-        new java.lang.String[] { "Pid", "Msg", "IsTruthful", "NodeNeedConfirm", "TimeReceive", });
+        internal_static_com_hcmus_distributed_system_grpc_BroadcastResponse_descriptor,
+        new java.lang.String[] { "BaseResponse", });
+    internal_static_com_hcmus_distributed_system_grpc_BaseRequest_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_com_hcmus_distributed_system_grpc_BaseRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_hcmus_distributed_system_grpc_BaseRequest_descriptor,
+        new java.lang.String[] { "Pid", "TimeSend", });
+    internal_static_com_hcmus_distributed_system_grpc_BaseResponse_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_com_hcmus_distributed_system_grpc_BaseResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_hcmus_distributed_system_grpc_BaseResponse_descriptor,
+        new java.lang.String[] { "Pid", "Ack", "TimeReceive", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
