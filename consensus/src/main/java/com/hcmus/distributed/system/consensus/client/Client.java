@@ -2,18 +2,21 @@ package com.hcmus.distributed.system.consensus.client;
 
 import com.hcmus.distributed.system.consensus.config.ProcessInfo;
 import com.hcmus.distributed.system.grpc.BaseRequest;
-import com.hcmus.distributed.system.grpc.BroadcastRequest;
 import com.hcmus.distributed.system.grpc.ConsensusServiceGrpc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Component
+@EnableAsync
 @EnableScheduling
 public class Client {
     private static final Logger LOGGER = LoggerFactory.getLogger(Client.class);
@@ -25,6 +28,7 @@ public class Client {
         this.stubMap = processInfo.getStubMap();
     }
 
+    @Async
     @Scheduled(fixedRateString = "${fixRated}", initialDelayString = "${initial.delay}")
     public void sendRequest() {
         if(this.processInfo.isByzantine()) {
@@ -38,13 +42,13 @@ public class Client {
                 LOGGER.info("Send msg to node {}...", pid);
                 ConsensusServiceGrpc.ConsensusServiceBlockingStub stub = this.stubMap.get(pid);
                 try{
-                    stub.schedule(request);
+                    stub.withDeadlineAfter(3L, TimeUnit.SECONDS).schedule(request);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    LOGGER.debug("TIME EXCEED AT CLIENT");
                 }
                 index++;
             }
-            LOGGER.info("Finish broadcast to total {} nodes", index);
+            LOGGER.info("Finish send schedule msg to total {} nodes", index);
         }
     }
 }
