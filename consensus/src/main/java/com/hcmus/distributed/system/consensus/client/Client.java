@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -31,12 +32,15 @@ public class Client {
     @Async
     @Scheduled(fixedRateString = "${fixRated}", initialDelayString = "${initial.delay}")
     public void sendRequest() {
+        BaseRequest request = BaseRequest.newBuilder().setPid(this.processInfo.getPid())
+                .setTimeSend(System.currentTimeMillis())
+                .build();
+        boolean isSend = false;
         if(this.processInfo.isByzantine()) {
-            // TODO : if this is node is byzantine
-        } else {
-            BaseRequest request = BaseRequest.newBuilder().setPid(this.processInfo.getPid())
-                                            .setTimeSend(System.currentTimeMillis())
-                                            .build();
+            isSend = new Random().nextBoolean();
+        }
+        if(isSend) {
+
             int index = 0;
             for(String pid : this.stubMap.keySet()) {
                 LOGGER.info("Send msg to node {}...", pid);

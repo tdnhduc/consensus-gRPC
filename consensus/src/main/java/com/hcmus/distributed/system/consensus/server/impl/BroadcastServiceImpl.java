@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -61,6 +62,10 @@ public class BroadcastServiceImpl extends ConsensusServiceGrpc.ConsensusServiceI
         } else {
             builder.setIsLegal(false);
         }
+        if (this.processInfo.isByzantine()) {
+            builder.setIsLegal(new Random().nextBoolean());
+        }
+
         this.doBroadCast(builder.build());
 
         responseObserver.onNext(response);
