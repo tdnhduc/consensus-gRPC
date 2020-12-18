@@ -35,7 +35,7 @@ public class Client {
         BaseRequest request = BaseRequest.newBuilder().setPid(this.processInfo.getPid())
                 .setTimeSend(System.currentTimeMillis())
                 .build();
-        boolean isSend = false;
+        boolean isSend = true;
         if(this.processInfo.isByzantine()) {
             isSend = new Random().nextBoolean();
         }
