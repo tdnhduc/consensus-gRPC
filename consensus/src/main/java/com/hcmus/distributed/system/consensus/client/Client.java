@@ -43,7 +43,6 @@ public class Client {
 
             int index = 0;
             for(String pid : this.stubMap.keySet()) {
-                LOGGER.info("Send msg to node {}...", pid);
                 ConsensusServiceGrpc.ConsensusServiceBlockingStub stub = this.stubMap.get(pid);
                 try{
                     stub.withDeadlineAfter(3L, TimeUnit.SECONDS).schedule(request);

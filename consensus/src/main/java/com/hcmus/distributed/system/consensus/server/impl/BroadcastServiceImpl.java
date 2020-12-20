@@ -36,7 +36,7 @@ public class BroadcastServiceImpl extends ConsensusServiceGrpc.ConsensusServiceI
 
     @Override
     public void broadcast(BroadcastRequest request, StreamObserver<BroadcastResponse> responseObserver) {
-        LOGGER.info("[BROADCAST] receive broad cast confirm from pid = {}, node need confirm = {}, is this node legal = {}",
+        LOGGER.info("[BROADCAST][RECEIVE] broad cast confirm from pid = {}, node need confirm = {}, is this node legal = {}",
                                                                                 request.getBaseRequest().getPid(),
                                                                                 request.getPidNeedConfirm(),
                                                                                 request.getIsLegal());
@@ -133,7 +133,7 @@ public class BroadcastServiceImpl extends ConsensusServiceGrpc.ConsensusServiceI
                 LOGGER.debug("DEADLINE EXCEED");
             }
         }
-        LOGGER.info("[BROADCAST] total broadcast to {} nodes", index);
+        LOGGER.info("[BROADCAST][SEND] total broadcast to {} nodes", index);
     }
 
     private synchronized void calculateQuantumConfirm (BroadcastRequest request, String pidExpect) {
