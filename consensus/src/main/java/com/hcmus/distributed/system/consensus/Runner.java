@@ -19,7 +19,6 @@ public class Runner {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
         context.register(Config.class);
         context.register(Client.class);
-        context.register(StableWriter.class);
         context.refresh();
         SpringApplicationContext.setSharedApplicationContext(context);
         ProcessInfo processInfo = SpringApplicationContext.getBean(ProcessInfo.class);

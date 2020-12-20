@@ -10,6 +10,7 @@ import io.grpc.stub.StreamObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 import java.util.Random;
@@ -39,7 +40,8 @@ public class BroadcastServiceImpl extends ConsensusServiceGrpc.ConsensusServiceI
                                                                                 request.getBaseRequest().getPid(),
                                                                                 request.getPidNeedConfirm(),
                                                                                 request.getIsLegal());
-        calculateQuantumConfirm(request);
+        String pidExpect = this.calculatePid(request.getBaseRequest().getTimeSend(), request.getPidNeedConfirm());
+        calculateQuantumConfirm(request, pidExpect);
         BaseResponse baseResponse = BaseResponse.newBuilder().setTimeReceive(System.currentTimeMillis())
                                                             .setPid(this.processInfo.getPid())
                                                             .setAck(true).build();
@@ -56,7 +58,8 @@ public class BroadcastServiceImpl extends ConsensusServiceGrpc.ConsensusServiceI
                                             .setPid(this.processInfo.getPid())
                                             .setTimeReceive(System.currentTimeMillis()).build();
         BroadcastRequest.Builder builder = this.broadRequestBuilder(request.getPid());
-        if(this.validateScheduleRequest(request)) {
+        String pidExpect = this.calculatePid(request.getTimeSend(), request.getPid());
+        if(this.validateScheduleRequest(request, pidExpect)) {
             builder.setIsLegal(true);
             this.pushIntoConfirmMap(request);
         } else {
@@ -73,22 +76,7 @@ public class BroadcastServiceImpl extends ConsensusServiceGrpc.ConsensusServiceI
 
     }
 
-    private boolean validateScheduleRequest(BaseRequest request) {
-        Date date = TimeParser.parseCurrentTime(request.getTimeSend());
-        long seconds = (date.getMinutes() * 60 + date.getSeconds()) * 1000;
-        while(seconds >= this.processInfo.getFixRated()) {
-            seconds -= this.processInfo.getFixRated();
-        }
-        String pidExpect = "";
-        seconds += this.processInfo.getMapTimeDelay().get(request.getPid());
-        for(String pid : this.processInfo.getMapTimeDelay().keySet()) {
-            if (seconds >= this.processInfo.getMapTimeDelay().get(pid)) {
-                pidExpect = pid;
-            } else {
-                break;
-            }
-        }
-        LOGGER.info("Time = {}", seconds);
+    private boolean validateScheduleRequest(BaseRequest request, String pidExpect) {
         if (pidExpect.isEmpty()) {
             LOGGER.error("Cannot calculate pid expect from request!!!");
             return false;
@@ -100,6 +88,24 @@ public class BroadcastServiceImpl extends ConsensusServiceGrpc.ConsensusServiceI
             LOGGER.info("[INVALID] schedule request pid = {}, pidExpect = {}", request.getPid(), pidExpect);
             return false;
         }
+    }
+
+    private String calculatePid(long timeSend, String pidReq) {
+        Date date = TimeParser.parseCurrentTime(timeSend);
+        long seconds = (date.getMinutes() * 60 + date.getSeconds()) * 1000;
+        while(seconds >= this.processInfo.getFixRated()) {
+            seconds -= this.processInfo.getFixRated();
+        }
+        String pidExpect = "";
+        seconds += this.processInfo.getMapTimeDelay().get(pidReq);
+        for(String pid : this.processInfo.getMapTimeDelay().keySet()) {
+            if (seconds >= this.processInfo.getMapTimeDelay().get(pid)) {
+                pidExpect = pid;
+            } else {
+                break;
+            }
+        }
+        return pidExpect;
     }
 
     private void pushIntoConfirmMap(BaseRequest request) {
@@ -130,7 +136,7 @@ public class BroadcastServiceImpl extends ConsensusServiceGrpc.ConsensusServiceI
         LOGGER.info("[BROADCAST] total broadcast to {} nodes", index);
     }
 
-    private synchronized void calculateQuantumConfirm (BroadcastRequest request) {
+    private synchronized void calculateQuantumConfirm (BroadcastRequest request, String pidExpect) {
         if (request.getIsLegal()) {
             AtomicInteger confirm = this.confirmMap.get(request.getPidNeedConfirm());
             if (confirm == null) {
@@ -138,6 +144,11 @@ public class BroadcastServiceImpl extends ConsensusServiceGrpc.ConsensusServiceI
             } else {
                 if (confirm.incrementAndGet() >= this.processInfo.getNumberConfirm()) {
                     LOGGER.info("[CONFIRM] enough confirm, write to stable storage by pid {}", request.getPidNeedConfirm());
+                    try {
+                        this.stableWriter.writeToStableFile(TimeParser.parseInfoToStableStorage(System.currentTimeMillis(), pidExpect, request.getPidNeedConfirm()));
+                    } catch (IOException e) {
+                        LOGGER.error("Cannot write to stable storage");
+                    }
                     this.confirmMap.remove(request.getPidNeedConfirm());
                     return;
                 }

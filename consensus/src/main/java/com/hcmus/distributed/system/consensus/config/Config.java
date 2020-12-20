@@ -10,6 +10,7 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
@@ -120,6 +121,14 @@ public class Config {
         this.numberNeedConfirm = numberNeedConfirm;
     }
 
+    public String getStableDirection() {
+        return stableDirection;
+    }
+
+    public void setStableDirection(String stableDirection) {
+        this.stableDirection = stableDirection;
+    }
+
     @Bean
     public ProcessInfo processInfo() throws InvalidConfig {
         return new ProcessInfo(pid, Integer.valueOf(port), byzantine, initialDelay, fixRated, numberNeedConfirm, timeDelayAllServer, pidServers, portServers);
@@ -127,13 +136,12 @@ public class Config {
 
     @Bean
     FileWriter file() throws IOException {
-        FileWriter myFile = new FileWriter(stableDirection);
-        return myFile;
+        return new FileWriter(stableDirection);
     }
 
     @Bean
-    public StableWriter stableWriter(FileWriter fileWriter) {
-        return new StableWriter(fileWriter);
+    public StableWriter stableWriter() {
+        return new StableWriter(stableDirection);
     }
 
     @Bean
