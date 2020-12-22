@@ -93,9 +93,14 @@ public class BroadcastServiceImpl extends ConsensusServiceGrpc.ConsensusServiceI
     private String calculatePid(long timeSend, String pidReq) {
         Date date = TimeParser.parseCurrentTime(timeSend);
         long seconds = (date.getMinutes() * 60 + date.getSeconds()) * 1000;
-        while(seconds >= this.processInfo.getFixRated()) {
-            seconds -= this.processInfo.getFixRated();
+        
+        while(seconds >= 15000) {
+            if( seconds >= this.processInfo.getFixRated() )
+                seconds -= this.processInfo.getFixRated();
+            else
+                seconds -= 15000;
         }
+
         String pidExpect = "";
         seconds += this.processInfo.getMapTimeDelay().get(pidReq);
         for(String pid : this.processInfo.getMapTimeDelay().keySet()) {
